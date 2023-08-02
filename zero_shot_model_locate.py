@@ -192,4 +192,4 @@ if __name__ == '__main__':
         raise NotImplementedError
 
     # Evaluate testing accuracy on randomly sampled preferences
-    _, _ = gen_acc_dict(all_data_test, all_label_test, args.data_dir, num_tasks=num_tasks, num_prefs_per_task=args.num_prefs_per_task, num_models_per_pref=args.num_models_per_pref, alpha=args.alpha)
+    _, _ = gen_acc_dict(all_data_test, all_label_test, args.data_dir, num_tasks=int(num_tasks), num_prefs_per_task=int(args.num_prefs_per_task), num_models_per_pref=int(args.num_models_per_pref), alpha=float(args.alpha))

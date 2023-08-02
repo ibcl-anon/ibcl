@@ -18,11 +18,13 @@ if __name__ == '__main__':
 
     if args.task_name == 'cifar10':
         trainloader, testloader = download_cifar10(args.raw_data_dir)
+        print('Preprocessing CIFAR-10 data ...')
         train_features, train_labels = feature_extraction(trainloader)
         test_features, test_labels = feature_extraction(testloader)
         save_split_cifar10(args.proc_data_dir, train_features, train_labels, test_features, test_labels)
     elif args.task_name == 'celeba':
         trainloader, valloader, testloader = download_celeba(args.raw_data_dir)
+        print('Preprocessing CelebA data ...')
         train_features, train_labels = feature_extraction(trainloader)
         val_features, val_labels = feature_extraction(valloader)
         test_features, test_labels = feature_extraction(testloader)

@@ -1,5 +1,18 @@
 # IBCL Code
 
+## Update 08/02/2023
+
+1. Fixed module import errors by modifying the directory structure.
+
+2. Fixed argument errors in `general_model` in `fgcs_update.py`.
+
+3. Fixed type error of input arguments to `zero_shot_model_locate.py`.
+
+4. Modified the instructions below accordingly.
+
+
+## Instructions of running our code
+
 ### 0. Prerequisites
 
 To run the project, please install Python >= 3.8 and the packages in the requirements.txt file by running
@@ -13,9 +26,10 @@ pip install -r requirements.txt
 To preprocess data for both Split CIFAR-10 and CelebA, run the following command.
 
 ```
-python ibcl_main/preprocess.py --task_name=<cifar10|celeba> --raw_data_dir=<your raw data dir> --proc_data_dir=<your proc data dir>
+python preprocess_data.py --task_name=<cifar10|celeba> --raw_data_dir=<path to your raw data dir> --proc_data_dir=<path to your proc data dir>
 ```
 
+Notice that it is not necessary to creat these two directories beforehand, because this command will automatically create them, as long as the paths are valid.
 This will first download raw CIFAR10 or CelebA data from their torchvision sources.
 The downloaded raw data will be saved in a directory, and processed data will be stored in another.
 The preprocessing include transform and feature extraction by a pre-trained ResNet18.
@@ -27,11 +41,11 @@ and set `download=False` for all 3 datasets in `download_celeba` in `utils/prepr
 To update FGCS knowledge base by training, run the following command.
 
 ```
-python ibcl_main/fgcs_update.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --model_size=<small|normal|large>
+python fgcs_update.py --task_name=<cifar10|celeba> --data_dir=<path to your proc data dir> --model_size=<small|normal|large>
 ```
 
 We provide 3 different models (3 parameter spaces) for training. Their architectures are available in `models/models.py`. The default model is small.
-For every task, this code will update the FGCS in `fgcs.pth` in the directory provided. FGCS across all tasks will be checkpointed in this file.
+For every task, this code will update the FGCS in `fgcs.pth` in the preprocessed data directory provided. FGCS across all tasks will be checkpointed in this file.
 We also save a log of loss and a log of validation accuracy per epoch during training.
 
 ### 3. Zero-shot preference addressing
@@ -39,10 +53,15 @@ We also save a log of loss and a log of validation accuracy per epoch during tra
 To locate model HDRs that address particular preferences, run the following command.
 
 ```
-python ibcl_main/zero_shot_model_locate.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --alpha=<a number between 0 and 1> --num_prefs_per_task=<number of preferences per task> --num_models_per_pref=<number of sampled models per preference>
+python zero_shot_model_locate.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --alpha=<a number between 0 and 1> --num_prefs_per_task=<number of preferences per task> --num_models_per_pref=<number of sampled models per preference>
 ```
 
 This code will uniformly sample a number of preferences per task, except for the first task, which can only have preference = [1]. Then, for each preference, it computes an HDR and samples a number of models from the HDR.
 It then evaluates the testing accuracy on all tasks encountered so far. The evaluated accuracy and sampled preferences will be saved in two dictionaries in the provided directory.
 These results can be therefore used to compute metrics such as preference-weighted accuracy, average per-task accuracy, peak per-task accuracy and backward transfer.
 Notice that we also provide a method `compute_pareto_front_two_tasks` to estimate the Pareto set of the first two tasks of a benchmark. This result can be visualized as Figure 2 and 3 in our paper.
+
+
+## Example Split-CIFAR10 bash script
+
+We have included an example run of the entire three steps on Split-CIFAR10 as a bash script

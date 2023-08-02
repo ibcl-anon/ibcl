@@ -123,7 +123,7 @@ def fgcs_update(train_data_loader: DataLoader, val_data_loader: DataLoader, prio
         raise NotImplementedError
 
     # Initialize models and guides
-    models = [general_model(nets[j], task_ind, j, priors[j]) for j in range(num_extremes)]
+    models = [general_model(nets[j], task_ind, priors[j]) for j in range(num_extremes)]
     guides = [general_guide(nets[j], task_ind, j) for j in range(num_extremes)]
 
 
