@@ -10,6 +10,8 @@
 
 4. Modified the instructions below accordingly.
 
+5. Added Python script and instructions to visualize the outcomes.
+
 
 ## Instructions of running our code
 
@@ -61,7 +63,10 @@ It then evaluates the testing accuracy on all tasks encountered so far. The eval
 These results can be therefore used to compute metrics such as preference-weighted accuracy, average per-task accuracy, peak per-task accuracy and backward transfer.
 Notice that we also provide a method `compute_pareto_front_two_tasks` to estimate the Pareto set of the first two tasks of a benchmark. This result can be visualized as Figure 2 and 3 in our paper.
 
+### 4. Visualize the results
+
 
 ## Example Split-CIFAR10 bash script
 
-We have included an example run of the entire three steps on Split-CIFAR10 as a bash script
+We have included an example run of the entire three steps on Split-CIFAR10 as a bash script `example_split_cifar10.sh`.
+If calling this bash script does not work, please refer to the step-by-step instructions above to produce results.
