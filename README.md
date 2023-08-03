@@ -90,7 +90,7 @@ Notice that we also provide a method `compute_pareto_front_two_tasks` to estimat
 | ---------------------- | ---------------------- | ----------------------------- |
 | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
 
-<p style="text-align: center"><b>Figure 1: Example visualization after running `example_split_cifar10.sh`.</b></p>
+<p style="text-align: center;"><b>Figure 1: Example visualization after running `example_split_cifar10.sh`.</b></p>
 
 We added a script to help visualize the continual learning metrics as we did in Figure 7 of Appendix I. This includes average per task accuracy,
 peak per task accuracy and average per task backward transfer. To do so, run the following command.
@@ -152,7 +152,7 @@ Buffer growth | Avg per task accuracy       | Peak per task accuracy      | Avg 
 Linear | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
 Sublinear | ![avg_acc](figs/cifar10_avg_acc_sublinear_example.png) | ![peak_acc](figs/cifar10_peak_acc_sublinear_example.png) | ![avg_bt](figs/cifar10_avg_bt_sublinear_example.png)|
 
-<p style="text-align: center"><b>Figure 2: Comparison of continual learning performance metrics between linear and sublinear IBCL on Split CIFAR-10.</b></p>
+<p style="text-align: center;"><b>Figure 2: Comparison of continual learning performance metrics between linear and sublinear IBCL on Split CIFAR-10.</b></p>
 
 We can see there is a trade-off between buffer efficiency and continual learning performance.
 However, the peak per task accuracy is barely harmed in this case, and the backward transfer still remains consistently positive, meaning
@@ -162,7 +162,7 @@ that the model is not catastrophic forgetting. Moreover, a significant improveme
     <img src="figs/cifar10_sublinear_buffer.png"  width="50%" height="50%">
 </p>
 
-<p style="text-align: center"><b>Figure 3: Comparison of buffer growth between linear and sublinear IBCL on Split CIFAR-10.</b></p>
+<p style="text-align: center;"><b>Figure 3: Comparison of buffer growth between linear and sublinear IBCL on Split CIFAR-10.</b></p>
 
 
 We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by $\tau$)
