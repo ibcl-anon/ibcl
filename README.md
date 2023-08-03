@@ -67,7 +67,7 @@ It then evaluates the testing accuracy on all tasks encountered so far. The eval
 These results can be therefore used to compute metrics such as preference-weighted accuracy, average per-task accuracy, peak per-task accuracy and backward transfer.
 Notice that we also provide a method `compute_pareto_front_two_tasks` to estimate the Pareto set of the first two tasks of a benchmark. This result can be visualized as Figure 2 and 3 in our paper.
 
-### 4. Visualize the results
+### 4. Results visualization
 
 | Avg per task accuracy       | Peak per task accuracy      | Avg per task backward transfer|
 | ---------------------- | ---------------------- | ----------------------------- |
