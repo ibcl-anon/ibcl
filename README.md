@@ -114,7 +114,7 @@ A concrete algorithm to learn the FGCS, on top of Algorithm 1 in our paper, is:
 
 2. For each prior $Q_{i-1}^j$, learn its posterior $Q_{i}^j$ via variational inference on dataset of task $i$.
 
-3. For each new posterior $Q_{i}^j$, for each buffered posterior $Q'$, compute 2-Wasserstein distance $||Q_{i}^j - Q'||_{W_2}$.
+3. For each new posterior $Q_{i}^j$, for each buffered posterior $Q'$, compute 2-Wasserstein distance $||Q_{i}^{j} - Q'||_{W_{2}}$.
 Identify the buffered posterior $Q'_{min}$ that has the smallest distance to $Q_{i}^j$.
 
 4. If this smallest distance < a given threshold, do not buffer $Q_i^j$ and record that $Q_i^j$ is substituted by $Q'_{min}$.
@@ -134,7 +134,7 @@ Moreover, our implementation uses the same threshold for different BNN architect
 To remove the affect of parameter number on the 2-Wasserstein distance, we normalize all distances by the number of parameters.
 This can be seen in the computation of `dist` in `fgcs_update_sublinear.py`.
 
-Then, upon zero-shot preference addressing, we use the $Q'$ to substitute $Q_i^j$ when computing convex combinations.
+Then, upon zero-shot preference addressing, we use the identified $Q'_{min}$ to substitute $Q_i^j$ when computing convex combinations.
 We provide an example bash script `example_split_cifar10_sublinear.sh` on Split CIFAR-10.
 Based on this script, we compare the result between linear and sublinear buffer growths.
 
