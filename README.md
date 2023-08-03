@@ -96,7 +96,7 @@ These figures are produced under the configurations in `example_split_cifar10.sh
 Notice that this code does not visualize baseline results for comparison yet, but we can add this function per request.
 
 
-## Example Split-CIFAR10 bash script
+### 5. An example Split-CIFAR10 bash script
 
 We have included an example run of the entire three steps on Split-CIFAR10 as a bash script `example_split_cifar10.sh`.
 This script starts from preprocessing the data and ends up visualizing the results.
