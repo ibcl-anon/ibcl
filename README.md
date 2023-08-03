@@ -147,7 +147,7 @@ We can see there is a trade-off between buffer efficiency and continual learning
 However, the peak per task accuracy is barely harmed in this case, and the backward transfer still remains consistently positive, meaning
 that the model is not catastrophic forgetting. Moreover, a significant improvement is the buffer size growth, as shown below.
 
-![growth](figs/cifar10_sublinear_buffer.png)
+<img src="figs/cifar10_sublinear_buffer.png"  width="50%" height="50%">
 
 We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by distance threshold)
 and learning performance in IBCL. If we have a chance to make a camera-ready version, we will include additional experiments and discussion.
