@@ -7,16 +7,24 @@ import pyro
 import pyro.distributions as dist
 from scipy.special import erfinv
 from sklearn.metrics import accuracy_score
-from models.models import BayesianClassifierSmall
+from models.models import BayesianClassifierSmall, BayesianClassifier, BayesianClassifierLarge
 from utils.dataloader_utils import get_splitcifar10_test_data, get_celeba_test_data
 
 
 # Convex combination of param posteriors given a preference, assuming there are a fixed number of extremes per task
-def pref_convex_combination(pref: list, num_extremes=3):
+def pref_convex_combination(pref: list, model_type='small', num_extremes=3):
     assert np.abs(np.sum(pref) - 1) <= 1e-3  # need to sum to 1, but tolerate computational errors
 
     num_tasks = len(pref)
-    net = BayesianClassifierSmall()  # modify this if you chose normal or large classifiers
+
+    if model_type == 'small':
+        net = BayesianClassifierSmall()
+    elif model_type == 'normal':
+        net = BayesianClassifier()
+    elif model_type == 'large':
+        net = BayesianClassifierLarge()
+    else:
+        raise NotImplementedError
 
     # Prepare weight vector
     weights = []
@@ -116,7 +124,7 @@ def compute_pareto_front_two_tasks(prefs: list, data_dir, task_name='cifar10', a
 
 # For each task, sample prefs, for each pref, sample models
 # For each model, compute accuracy on all tasks so far, save in a dict
-def gen_acc_dict(all_data_test, all_label_test, data_dir, num_tasks=5, num_prefs_per_task=100, num_models_per_pref=1000, alpha=0.5):
+def gen_acc_dict(all_data_test, all_label_test, data_dir, model_type='small', num_tasks=5, num_prefs_per_task=100, num_models_per_pref=1000, alpha=0.5):
     dict_all_accs = {}
     dict_all_prefs = {}
 
@@ -138,7 +146,7 @@ def gen_acc_dict(all_data_test, all_label_test, data_dir, num_tasks=5, num_prefs
         # Compute HDRs of these preferences
         hdrs = []
         for pref in prefs:
-            dists_combined = pref_convex_combination(pref)
+            dists_combined = pref_convex_combination(pref, model_type=model_type)
             hdr = compute_hdr(dists_combined, alpha=alpha)
             hdrs += [hdr]
 
@@ -166,6 +174,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--task_name", help="celeba or cifar10", default='cifar10')
     parser.add_argument("--data_dir", help="directory to the preprocessed data", default=os.path.join('data', 'cifar-10-features'))
+    parser.add_argument("--model_size", help="small, normal or large", default='small')
     parser.add_argument("--alpha", help="alpha value of IBCL in (0, 1)", default=0.5)
     parser.add_argument("--num_prefs_per_task", help="numer of preferences per task", default=100)
     parser.add_argument("--num_models_per_pref", help="number of sampled models per preference", default=1000)
@@ -192,4 +201,4 @@ if __name__ == '__main__':
         raise NotImplementedError
 
     # Evaluate testing accuracy on randomly sampled preferences
-    _, _ = gen_acc_dict(all_data_test, all_label_test, args.data_dir, num_tasks=int(num_tasks), num_prefs_per_task=int(args.num_prefs_per_task), num_models_per_pref=int(args.num_models_per_pref), alpha=float(args.alpha))
+    _, _ = gen_acc_dict(all_data_test, all_label_test, args.data_dir, model_type=args.model_size, num_tasks=int(num_tasks), num_prefs_per_task=int(args.num_prefs_per_task), num_models_per_pref=int(args.num_models_per_pref), alpha=float(args.alpha))

@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58eeb0b6-2b34-400a-b2b0-f0768fddf467" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/fgcs_update_sublinear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example_split_cifar10.sh" beforeDir="false" afterPath="$PROJECT_DIR$/example_split_cifar10.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zero_shot_model_locate.py" beforeDir="false" afterPath="$PROJECT_DIR$/zero_shot_model_locate.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,6 +30,9 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\phd\ibcl\ibcl" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\phd\ibcl\ibcl_code" />
       <recent name="D:\phd\ibcl\ibcl_code\utils" />

@@ -10,11 +10,13 @@ First, we debugged our code to make sure it is runnable. This includes:
 
 3. Fixed type error of input arguments to `zero_shot_model_locate.py`.
 
-4. Modified the instructions below accordingly.
+4. Enabled flexible model sizes in `zero_shot_model_locate.py`.
+
+5. Modified the instructions below accordingly.
 
 Next, we added a visualization script for the final results. Specifically,
 
-5. Added Python script `visualize_results.py` and modified the instructions accordingly.
+6. Added Python script `visualize_results.py` and modified the instructions accordingly.
 
 
 ## Instructions of running our code
@@ -59,7 +61,7 @@ We also save a log of loss and a log of validation accuracy per epoch during tra
 To locate model HDRs that address particular preferences, run the following command.
 
 ```
-python zero_shot_model_locate.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --alpha=<a number between 0 and 1> --num_prefs_per_task=<number of preferences per task> --num_models_per_pref=<number of sampled models per preference>
+python zero_shot_model_locate.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --model_size=<small|normal|large> --alpha=<a number between 0 and 1> --num_prefs_per_task=<number of preferences per task> --num_models_per_pref=<number of sampled models per preference>
 ```
 
 This code will uniformly sample a number of preferences per task, except for the first task, which can only have preference = [1]. Then, for each preference, it computes an HDR and samples a number of models from the HDR.
