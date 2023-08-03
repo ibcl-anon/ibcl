@@ -71,7 +71,7 @@ Notice that we also provide a method `compute_pareto_front_two_tasks` to estimat
 
 | Avg per task acc       | Peak per task acc      | Avg per task backward transfer|
 | ---------------------- | ---------------------- | ----------------------------- |
-| ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | [avg_bt](figs/cifar10_avg_bt_example.png)|
+| ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
 
 We added a script to help visualize the continual learning metrics as we did in Figure 7 of Appendix I. This includes average per task accuracy,
 peak per task accuracy and average per task backward transfer. To do so, run the following command.
