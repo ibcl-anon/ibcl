@@ -140,5 +140,4 @@ We provide an example bash script `example_split_cifar10_sublinear.sh`, and comp
 Buffer growth | Avg per task accuracy       | Peak per task accuracy      | Avg per task backward transfer|
 --------------| ---------------------- | ---------------------- | ----------------------------- |
 Linear | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
---------------| -----------------------| -----------------------| ------------------------------|
 Sublinear | ![avg_acc](figs/cifar10_avg_acc_sublinear_example.png) | ![peak_acc](figs/cifar10_peak_acc_sublinear_example.png) | ![avg_bt](figs/cifar10_avg_bt_sublinear_example.png)|
