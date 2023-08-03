@@ -135,9 +135,23 @@ To remove the affect of parameter number on the 2-Wasserstein distance, we norma
 This can be seen in the computation of `dist` in `fgcs_update_sublinear.py`.
 
 Then, upon zero-shot preference addressing, we use the $Q'$ to substitute $Q_i^j$ when computing convex combinations.
-We provide an example bash script `example_split_cifar10_sublinear.sh`, and compare the result between linear and sublinear buffer growths.
+We provide an example bash script `example_split_cifar10_sublinear.sh` on Split CIFAR-10.
+Based on this script, we compare the result between linear and sublinear buffer growths.
 
 Buffer growth | Avg per task accuracy       | Peak per task accuracy      | Avg per task backward transfer|
 --------------| ---------------------- | ---------------------- | ----------------------------- |
 Linear | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
 Sublinear | ![avg_acc](figs/cifar10_avg_acc_sublinear_example.png) | ![peak_acc](figs/cifar10_peak_acc_sublinear_example.png) | ![avg_bt](figs/cifar10_avg_bt_sublinear_example.png)|
+
+We can see there is a trade-off between buffer efficiency and continual learning performance.
+However, the peak per task accuracy is barely harmed in this case, and the backward transfer still remains consistently positive, meaning
+that the model is not catastrophic forgetting. Moreover, a significant improvement is the buffer size growth, as shown below.
+
+![growth](figs/cifar10_sublinear_buffer.png)
+
+We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by distance threshold)
+and learning performance in IBCL. If we have a chance to make a camera-ready version, we will include additional experiments and discussion.
+Furthermore, more sophisticated sublinear buffer growth algorithms can be used for comparison, such as gift-wrapping algorithm [1] and other efficient convex hull
+optimization methods.
+
+[1] Chan, Timothy M. "Optimal output-sensitive convex hull algorithms in two and three dimensions." Discrete & Computational Geometry 16.4 (1996): 361-368.
