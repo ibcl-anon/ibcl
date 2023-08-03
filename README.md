@@ -114,10 +114,10 @@ A concrete algorithm to learn the FGCS, on top of Algorithm 1 in our paper, is:
 
 2. For each prior $Q_{i-1}^j$, learn its posterior $Q_{i}^j$ via variational inference on dataset of task $i$.
 
-3. For each new posterior $Q_{i}^j$, for each buffered posterior $Q'$, compute 2-Wasserstein distance $||Q_{i}^{j} - Q'||_{W_{2}}$.
-Identify the buffered posterior $Q'_{min}$ that has the smallest distance to $Q_{i}^j$.
+3. For each new posterior $Q_{i}^j$, for each buffered posterior $Q'$, compute 2-Wasserstein distance $||Q_{i}^{j} - Q'||\_{W_{2}}$.
+Identify the buffered posterior $Q'\_{min}$ that has the smallest distance to $Q_{i}^j$.
 
-4. If this smallest distance < a given threshold, do not buffer $Q_i^j$ and record that $Q_i^j$ is substituted by $Q'_{min}$.
+4. If this smallest distance < a given threshold $\tau$, do not buffer $Q_i^j$ and record that $Q_i^j$ is substituted by $Q'_{min}$.
 Otherwise, buffer $Q_i^j$ as another extreme point of the FGCS.
 
 5. Update each prior for next task to either $Q_i^j$ or its substitute, if it is substituted.
@@ -128,7 +128,7 @@ the 2-Wasserstein distance is equivalent to
 $$ ||Q_{i}^j - Q'||_{W_2} = ||\mu_{Q_i^j}^2 - \mu_{Q'}^2||_2^2 + ||\sigma_{Q_i^j}^2 - \sigma_{Q'}^2||_2^2 $$
 
 where $\mu_{Q}$ and $\sigma_{Q}$ are the concatenated vector of the means and standard deviations of all the parameter's Gaussians.
-Please refer to reference [12] in our paper for more detail. We can see there is one additional hyperparameter, i.e., distance threshold.
+Please refer to reference [12] in our paper for more detail. We can see there is one additional hyperparameter, i.e., distance threshold $\tau$.
 This threshold's value can be estimated by computing the distances among all posteriors in the linear version.
 Moreover, our implementation uses the same threshold for different BNN architectures, which have different number of parameters.to
 To remove the affect of parameter number on the 2-Wasserstein distance, we normalize all distances by the number of parameters.
@@ -151,7 +151,7 @@ that the model is not catastrophic forgetting. Moreover, a significant improveme
     <img src="figs/cifar10_sublinear_buffer.png"  width="50%" height="50%">
 </p>
 
-We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by distance threshold)
+We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by $\tau$)
 and learning performance in IBCL. If we have a chance to make a camera-ready version, we will include additional experiments and discussion.
 Furthermore, more sophisticated sublinear buffer growth algorithms can be used for comparison, such as gift-wrapping algorithm [1] and other efficient convex hull
 optimization methods.
