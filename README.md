@@ -20,9 +20,10 @@ Next, we added a visualization script for the final results. Specifically,
 
 Finally, we added an alternative version that uses sublinear buffer growth. Specifically,
 
-7. Added scripts `fgcs_update_sublinear.py`, `zero_shot_model_locate_sublinear.py`.
+7. Added scripts `fgcs_update_sublinear.py` and `zero_shot_model_locate_sublinear.py`.
+Enabled visualization of the sublinear growth result in `visualize_results.py`.
 
-8. Reported the comparison between the linear growth version on Split CIFAR-10.
+8. Reported the comparison between the sublinear and linear growth version on Split CIFAR-10.
 
 9. Modified the instructions accordingly, with an example use case `example_split_cifar10_sublinear.sh`.
 
@@ -107,4 +108,37 @@ If calling this bash script does not work, please refer to the step-by-step inst
 We would like to show that IBCL is not a naive expansion-based CL pipeline. That is, its buffer size is not linear in terms of
 the number of tasks. Instead, we can easily extend it to sublinear growth. The idea is to discard a newly learned posterior $Q$ if we have identified
 a buffered posterior $Q'$ that is very similar to it. In this case, we record the mapping $Q \mapsto Q'$ and use $Q'$ as a substitute of $Q$.
+A concrete algorithm to learn the FGCS, on top of Algorithm 1 in our paper, is:
 
+1. At task $i$, get $m$ priors from the buffer, $Q_{i-1}^1, \dots, Q_{i-1}^m$.
+
+2. For each prior $Q_{i-1}^j$, learn its posterior $Q_{i}^j$ via variational inference on dataset of task $i$.
+
+3. For each new posterior $Q_{i}^j$, for each buffered posterior $Q'$, compute 2-Wasserstein distance $||Q_{i}^j - Q'||_{W_2}$.
+Identify the buffered posterior $Q'_{min}$ that has the smallest distance to $Q_{i}^j$.
+
+4. If this smallest distance < a given threshold, do not buffer $Q_i^j$ and record that $Q_i^j$ is substituted by $Q'_{min}$.
+Otherwise, buffer $Q_i^j$ as another extreme point of the FGCS.
+
+5. Update each prior for next task to either $Q_i^j$ or its substitute, if it is substituted.
+
+In practice, since we assume all parameters (weights and biases of the BNN) is a Gaussian and they are independent of each other,
+the 2-Wasserstein distance is equivalent to
+
+\[||Q_{i}^j - Q'||_{W_2} = ||\mu_{Q_i^j}^2 - \mu_{Q'}^2||_2^2 + ||\sigma_{Q_i^j}^2 - \sigma_{Q'}^2||_2^2\]
+
+where $\mu_{Q}$ and $\sigma_{Q}$ are the concatenated vector of the means and standard deviations of all the parameter's Gaussians.
+Please refer to reference [12] in our paper for more detail. We can see there is one additional hyperparameter, i.e., distance threshold.
+This threshold's value can be estimated by computing the distances among all posteriors in the linear version.
+Moreover, our implementation uses the same threshold for different BNN architectures, which have different number of parameters.to
+To remove the affect of parameter number on the 2-Wasserstein distance, we normalize all distances by the number of parameters.
+This can be seen in the computation of `dist` in `fgcs_update_sublinear.py`.
+
+Then, upon zero-shot preference addressing, we use the $Q'$ to substitute $Q_i^j$ when computing convex combinations.
+We provide an example bash script `example_split_cifar10_sublinear.sh`, and compare the result between linear and sublinear buffer growths.
+
+Buffer growth | Avg per task accuracy       | Peak per task accuracy      | Avg per task backward transfer|
+--------------| ---------------------- | ---------------------- | ----------------------------- |
+Linear | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
+--------------| -----------------------| -----------------------| ------------------------------|
+Sublinear | ![avg_acc](figs/cifar10_avg_acc_sublinear_example.png) | ![peak_acc](figs/cifar10_peak_acc_sublinear_example.png) | ![avg_bt](figs/cifar10_avg_bt_sublinear_example.png)|
