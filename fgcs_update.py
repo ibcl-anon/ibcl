@@ -172,8 +172,8 @@ def fgcs_update_main(data_dir, tasks, model_type='small', lr=1e-3, epochs=10, ve
         priors = posteriors
         loss_logs += [running_losses]
         val_acc_logs += [val_accs]
-        print(running_losses)
-        print(val_accs)
+        print(f'Running losses: {running_losses}')
+        print(f'Running val accs: {val_accs}')
 
         # Save info for every task
         pyro.get_param_store().save(os.path.join(data_dir, 'fgcs.pth'))

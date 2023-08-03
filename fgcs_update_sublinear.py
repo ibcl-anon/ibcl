@@ -10,6 +10,7 @@ import pyro.distributions.constraints as constraints
 from pyro.infer import SVI
 from pyro.optim import Adam
 from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
 from models.models import BayesianClassifier, BayesianClassifierLarge, BayesianClassifierSmall
 from models.loss_funcs import CustomTrace_ELBO
 from utils.dataloader_utils import get_celeba_loaders, get_splitcifar10_loaders
@@ -106,6 +107,74 @@ def evaluate(guide, data_loader):
     return accuracy
 
 
+# Get posterior dict by name
+def get_posterior_by_name(model_name, model_type='small'):
+    if model_type == 'small':
+        net = BayesianClassifierSmall()
+    elif model_type == 'normal':
+        net = BayesianClassifier()
+    elif model_type == 'large':
+        net = BayesianClassifierLarge()
+    else:
+        raise NotImplementedError
+    posterior = {}
+    for name, param in net.named_parameters():
+        if 'weight' in name:
+            param_posterior = dist.Normal(pyro.param(model_name + name + '_mu'),
+                                          pyro.param(model_name + name + '_sigma')).to_event(2)
+        else:
+            param_posterior = dist.Normal(pyro.param(model_name + name + '_mu'),
+                                          pyro.param(model_name + name + '_sigma')).to_event(1)
+        posterior[name] = param_posterior
+    return posterior
+
+
+# Extract parameter values from a saved posterior
+def get_param_values(model_name, model_type='small'):
+    if model_type == 'small':
+        net = BayesianClassifierSmall()
+    elif model_type == 'normal':
+        net = BayesianClassifier()
+    elif model_type == 'large':
+        net = BayesianClassifierLarge()
+    else:
+        raise NotImplementedError
+    param_mus = []
+    param_sigmas = []
+    for name, _ in net.named_parameters():
+        mu = pyro.param(model_name + name + '_mu').detach().numpy()
+        sigma = pyro.param(model_name + name + '_sigma').detach().numpy()
+        mu = np.squeeze(mu)
+        sigma = np.squeeze(sigma)
+        if len(mu.shape) == 0:  # bias param, add 1 dimension
+            mu = np.array([mu])
+            sigma = np.array([sigma])
+        param_mus += [mu]
+        param_sigmas += [sigma]
+        param_sigmas += [sigma]
+    param_mus = np.concatenate(param_mus)
+    param_sigmas = np.concatenate(param_sigmas)
+    param_mus = np.array(param_mus).flatten()
+    param_sigmas = np.array(param_sigmas).flatten()
+    return param_mus, param_sigmas
+
+
+# Delete a posterior's parameters in Pyro buffer
+def delete_posterior(model_name, model_type='small'):
+    if model_type == 'small':
+        net = BayesianClassifierSmall()
+    elif model_type == 'normal':
+        net = BayesianClassifier()
+    elif model_type == 'large':
+        net = BayesianClassifierLarge()
+    else:
+        raise NotImplementedError
+    for name, _ in net.named_parameters():
+        del pyro.get_param_store()[model_name + name + '_mu']
+        del pyro.get_param_store()[model_name + name + '_sigma']
+    return
+
+
 # Knowledge is saved in pyro.get_param_store()
 # priors: posteriors from previous task
 def fgcs_update(train_data_loader: DataLoader, val_data_loader: DataLoader, priors: list, task_ind: int, model_type='small', num_extremes=3, lr=1e-3, epochs=10, verbose=False):
@@ -126,7 +195,6 @@ def fgcs_update(train_data_loader: DataLoader, val_data_loader: DataLoader, prio
     models = [general_model(nets[j], task_ind, priors[j]) for j in range(num_extremes)]
     guides = [general_guide(nets[j], task_ind, j) for j in range(num_extremes)]
 
-
     # Train the models
     for j in range(num_extremes):
         if verbose:
@@ -141,26 +209,35 @@ def fgcs_update(train_data_loader: DataLoader, val_data_loader: DataLoader, prio
     posteriors = []
     for j in range(num_extremes):
         model_name = str(task_ind) + '_' + str(j) + '_'
-        posterior = {}
-        for name, param in nets[j].named_parameters():
-            if 'weight' in name:
-                param_posterior = dist.Normal(pyro.param(model_name + name + '_mu'),
-                                              pyro.param(model_name + name + '_sigma')).to_event(2)
-            else:
-                param_posterior = dist.Normal(pyro.param(model_name + name + '_mu'),
-                                              pyro.param(model_name + name + '_sigma')).to_event(1)
-            posterior[name] = param_posterior
+        posterior = get_posterior_by_name(model_name, model_type=model_type)
         posteriors += [posterior]
 
     return posteriors, running_losses, val_accs
 
 
+def plot_buffer_growth(buffer_growth: list):
+    xticks = np.arange(len(buffer_growth))
+    plt.plot(xticks, buffer_growth, color='orange', label='sublinear')
+    plt.plot(xticks, xticks * 3, color='blue', label='linear')
+    plt.legend()
+    plt.title('Linear vs sublinear buffer growth')
+    plt.xlabel('Task num')
+    plt.ylabel('Model num')
+    plt.show()
+    return
+
+
 # Main loop, sublinear version
-def fgcs_update_main_sublinear(data_dir, tasks, model_type='small', lr=1e-3, epochs=10, verbose=True, task_name='cifar10'):
+def fgcs_update_main_sublinear(data_dir, tasks, model_type='small', discard_threshold=1e-2, lr=1e-3, epochs=10, verbose=True, task_name='cifar10'):
     priors = [first_prior(std, model_type=model_type) for std in [0.25, 0.3, 0.35]]
     num_extremes = len(priors)
     loss_logs = []
     val_acc_logs = []
+
+    buffered_models = []  # store the indices of buffered posterior models, i.e., (task_ind, extremum_ind)
+    dict_reuse_map = {}  # discarded posterior : reused posterior
+    buffer_growth = [0]  # track buffer growth
+
     for i in tasks:
         if task_name == 'cifar10':
             task_train_loader, task_val_loader = get_splitcifar10_loaders(data_dir, i)
@@ -170,18 +247,60 @@ def fgcs_update_main_sublinear(data_dir, tasks, model_type='small', lr=1e-3, epo
             raise NotImplementedError
         posteriors, running_losses, val_accs = fgcs_update(task_train_loader, task_val_loader, priors, model_type=model_type, task_ind=i, num_extremes=num_extremes, lr=lr, epochs=epochs, verbose=verbose)
 
-        # Check similarity of current posteriors among each other
+        # Check similarity of current posteriors with the ones before, discard if exists similar ones
+        for j in range(len(posteriors)):
+            param_mus_j, param_sigmas_j = get_param_values(model_name=f'{i}_{j}_', model_type=model_type)
 
-        priors = posteriors
+            distances = {}
+            for k in range(len(buffered_models)):
+                buffered_model_name = buffered_models[k]
+                print(f'Comparing {i}, {j} to {buffered_model_name} ...')
+                param_mus_k, param_sigmas_k = get_param_values(model_name=buffered_model_name, model_type=model_type)
+                dist = np.linalg.norm(param_mus_j - param_mus_k) / len(param_mus_j) + np.linalg.norm(param_sigmas_j - param_sigmas_k) / len(param_sigmas_j)
+                distances[buffered_model_name] = dist
+
+            # No model is buffered yet, continue
+            if len(distances.items()) == 0:
+                print(f'No posterior buffered yet, buffering posterior {i}, {j} ...')
+                buffered_models += [f'{i}_{j}_']
+                continue
+
+            # Get the previous model that has the min distance to the current model
+            min_posterior_name, min_dist = min(distances.items(), key=lambda x: x[1])
+            if min_dist <= discard_threshold:
+                # We can use min_posterior to represent this posterior, discard this posterior
+                print(f'Within threshold, discarding posterior {i}, {j} ...')
+                delete_posterior(model_name=f'{i}_{j}_', model_type=model_type)
+                dict_reuse_map[f'{i}_{j}_'] = min_posterior_name
+            else:
+                # Cache the new posterior in buffer
+                print(f'Beyond threshold, buffering posterior {i}, {j} ...')
+                buffered_models += [f'{i}_{j}_']
+
+        buffer_growth += [len(buffered_models)]
+
+        # If current posterior is replaced by a previous one, use that one as new prior
+        priors = []
+        for j in range(len(posteriors)):
+            if f'{i}_{j}_' in dict_reuse_map:
+                reused_model_name = dict_reuse_map[f'{i}_{j}_']
+                new_prior = get_posterior_by_name(model_name=reused_model_name, model_type=model_type)
+            else:
+                new_prior = posteriors[j]
+            priors += [new_prior]
+
         loss_logs += [running_losses]
         val_acc_logs += [val_accs]
-        print(running_losses)
-        print(val_accs)
+        print(f'Running losses: {running_losses}')
+        print(f'Running val accs: {val_accs}')
 
         # Save info for every task
-        pyro.get_param_store().save(os.path.join(data_dir, 'fgcs.pth'))
-        np.save(os.path.join(data_dir, 'loss_logs.npy'), loss_logs)
-        np.save(os.path.join(data_dir, 'val_acc_logs.npy'), val_acc_logs)
+        pyro.get_param_store().save(os.path.join(data_dir, 'fgcs_sublinear.pth'))
+        np.save(os.path.join(data_dir, 'loss_logs_sublinear.npy'), loss_logs)
+        np.save(os.path.join(data_dir, 'val_acc_logs_sublinear.npy'), val_acc_logs)
+        torch.save(dict_reuse_map, os.path.join(data_dir, f'dict_reuse_map.pt'))
+
+    plot_buffer_growth(buffer_growth)
 
     return loss_logs, val_acc_logs
 
@@ -192,6 +311,7 @@ if __name__ == '__main__':
     parser.add_argument("--task_name", help="celeba or cifar10", default='cifar10')
     parser.add_argument("--data_dir", help="directory to the preprocessed data", default=os.path.join('data', 'cifar-10-features'))
     parser.add_argument("--model_size", help="small, normal or large", default='small')
+    parser.add_argument("--discard_threshold", help="threshold on posterior param distances to discard new posteriors for sublinear buffer growth", default=0.01)
 
     args = parser.parse_args()
     lr, epochs = 1e-3, 10
@@ -205,4 +325,4 @@ if __name__ == '__main__':
 
     # An example training call, model type can be 'large', 'normal' or 'small'
     # Result FGCS will be stored in fgcs.pth
-    _, _ = fgcs_update_main(args.data_dir, tasks=tasks, model_type=args.model_size, lr=lr, epochs=epochs, task_name=args.task_name)
+    _, _ = fgcs_update_main_sublinear(args.data_dir, tasks=tasks, model_type=args.model_size, discard_threshold=float(args.discard_threshold), lr=lr, epochs=epochs, task_name=args.task_name)

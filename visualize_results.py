@@ -101,6 +101,7 @@ if __name__ == '__main__':
     parser.add_argument("--data_dir", help="directory to the preprocessed data",
                         default=os.path.join('data', 'cifar-10-features'))
     parser.add_argument("--alpha", help="alpha value of IBCL in (0, 1)", default=0.5)
+    parser.add_argument("--sublinear", help="0 or 1, 1 means it is a sublinear model", default=0)
     args = parser.parse_args()
 
     if args.task_name == 'cifar10':
@@ -111,7 +112,10 @@ if __name__ == '__main__':
         raise NotImplementedError
 
     # Load dict of accs
-    dict_all_accs = torch.load(os.path.join(args.data_dir, f'dict_all_accs_{args.alpha}.pt'))
+    if int(args.sublinear) == 0:
+        dict_all_accs = torch.load(os.path.join(args.data_dir, f'dict_all_accs_{args.alpha}.pt'))
+    else:
+        dict_all_accs = torch.load(os.path.join(args.data_dir, f'dict_all_accs_{args.alpha}_sublinear.pt'))
 
     # Compute metrics
     dict_avg_accs = avg_per_task_acc(dict_all_accs, task_nums=task_nums)
