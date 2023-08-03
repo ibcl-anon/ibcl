@@ -69,7 +69,7 @@ Notice that we also provide a method `compute_pareto_front_two_tasks` to estimat
 
 ### 4. Visualize the results
 
-| Avg per task acc       | Peak per task acc      | Avg per task backward transfer|
+| Avg per task accuracy       | Peak per task accuracy      | Avg per task backward transfer|
 | ---------------------- | ---------------------- | ----------------------------- |
 | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10_peak_acc_example.png) | ![avg_bt](figs/cifar10_avg_bt_example.png)|
 
@@ -80,7 +80,8 @@ peak per task accuracy and average per task backward transfer. To do so, run the
 python visualize_results.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --alpha=<a number between 0 and 1>
 ```
 
-This will fetch the accuracy pt file saved from last step and produce 3 figures similar to the ones above.
+This will fetch the accuracy `.pt` file saved from last step and produce 3 figures similar to the ones above.
+These figures are produced under the configurations in `example_split_cifar10.sh`.
 Notice that this code does not visualize baseline results for comparison yet, but we can add this function per request.
 
 
