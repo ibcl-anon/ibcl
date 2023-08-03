@@ -125,7 +125,7 @@ Otherwise, buffer $Q_i^j$ as another extreme point of the FGCS.
 In practice, since we assume all parameters (weights and biases of the BNN) is a Gaussian and they are independent of each other,
 the 2-Wasserstein distance is equivalent to
 
-\[||Q_{i}^j - Q'||_{W_2} = ||\mu_{Q_i^j}^2 - \mu_{Q'}^2||_2^2 + ||\sigma_{Q_i^j}^2 - \sigma_{Q'}^2||_2^2\]
+$||Q_{i}^j - Q'||_{W_2} = ||\mu_{Q_i^j}^2 - \mu_{Q'}^2||_2^2 + ||\sigma_{Q_i^j}^2 - \sigma_{Q'}^2||_2^2$
 
 where $\mu_{Q}$ and $\sigma_{Q}$ are the concatenated vector of the means and standard deviations of all the parameter's Gaussians.
 Please refer to reference [12] in our paper for more detail. We can see there is one additional hyperparameter, i.e., distance threshold.
