@@ -122,7 +122,7 @@ Otherwise, buffer $Q_i^j$ as another extreme point of the FGCS.
 
 5. Update each prior for next task to either $Q_i^j$ or its substitute, if it is substituted.
 
-In practice, since we assume all scalar parameters (weights and biases of the BNN) is a Gaussian and they are independent of each other,
+In practice, since we assume all scalar parameters (weights and biases of the BNN) are Gaussians and they are independent of each other,
 the 2-Wasserstein distance is equivalent to
 
 $$ ||Q_{i}^j - Q'||\_{W_2} = ||\mu_{Q_i^j}^2 - \mu_{Q'}^2||\_2^2 + ||\sigma_{Q_i^j}^2 - \sigma_{Q'}^2||\_2^2 $$
