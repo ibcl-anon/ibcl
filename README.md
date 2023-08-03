@@ -12,11 +12,19 @@ First, we debugged our code to make sure it is runnable. This includes:
 
 4. Enabled flexible model sizes in `zero_shot_model_locate.py`.
 
-5. Modified the instructions below accordingly.
+5. Modified the instructions below accordingly, with an example use case `example_split_cifar10.sh`.
 
 Next, we added a visualization script for the final results. Specifically,
 
 6. Added Python script `visualize_results.py` and modified the instructions accordingly.
+
+Finally, we added an alternative version that uses sublinear buffer growth. Specifically,
+
+7. Added scripts `fgcs_update_sublinear.py`, `zero_shot_model_locate_sublinear.py`.
+
+8. Reported the comparison between the linear growth version on Split CIFAR-10.
+
+9. Modified the instructions accordingly, with an example use case `example_split_cifar10_sublinear.sh`.
 
 
 ## Instructions of running our code
@@ -92,3 +100,11 @@ Notice that this code does not visualize baseline results for comparison yet, bu
 We have included an example run of the entire three steps on Split-CIFAR10 as a bash script `example_split_cifar10.sh`.
 This script starts from preprocessing the data and ends up visualizing the results.
 If calling this bash script does not work, please refer to the step-by-step instructions above to produce results.
+
+
+## Sublinear buffer growth and additional experiment results
+
+We would like to show that IBCL is not a naive expansion-based CL pipeline. That is, its buffer size is not linear in terms of
+the number of tasks. Instead, we can easily extend it to sublinear growth. The idea is to discard a newly learned posterior $Q$ if we have identified
+a buffered posterior $Q'$ that is very similar to it. In this case, we record the mapping $Q \mapsto Q'$ and use $Q'$ as a substitute of $Q$.
+

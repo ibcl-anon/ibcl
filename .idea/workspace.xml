@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58eeb0b6-2b34-400a-b2b0-f0768fddf467" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/example_split_cifar10_sublinear.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/zero_shot_model_locate_sublinear.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgcs_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgcs_update.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgcs_update_sublinear.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgcs_update_sublinear.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualize_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize_results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
