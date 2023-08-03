@@ -2,6 +2,8 @@
 
 ## Update 08/02/2023
 
+First, we debugged our code to make sure it is runnable. This includes:
+
 1. Fixed module import errors by modifying the directory structure.
 
 2. Fixed argument errors in `general_model` in `fgcs_update.py`.
@@ -10,7 +12,9 @@
 
 4. Modified the instructions below accordingly.
 
-5. Added Python script and instructions to visualize the outcomes.
+Next, we added a visualization script for the final results. Specifically,
+
+5. Added Python script `visualize_results.py` and modified the instructions accordingly.
 
 
 ## Instructions of running our code
@@ -65,8 +69,21 @@ Notice that we also provide a method `compute_pareto_front_two_tasks` to estimat
 
 ### 4. Visualize the results
 
+|![alt](figs/cifar10_avg_acc_example.png) |![alt](figs/cifar10_peak_acc_example.png) |![alt](figs/cifar10_avg_bt_example.png)|
+
+We added a script to help visualize the continual learning metrics as we did in Figure 7 of Appendix I. This includes average per task accuracy,
+peak per task accuracy and average per task backward transfer. To do so, run the following command.
+
+```
+python visualize_results.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --alpha=<a number between 0 and 1>
+```
+
+This will fetch the accuracy pt file saved from last step and produce 3 figures similar to the ones above.
+Notice that this code does not visualize baseline results for comparison yet, but we can add this function per request.
+
 
 ## Example Split-CIFAR10 bash script
 
 We have included an example run of the entire three steps on Split-CIFAR10 as a bash script `example_split_cifar10.sh`.
+This script starts from preprocessing the data and ends up visualizing the results.
 If calling this bash script does not work, please refer to the step-by-step instructions above to produce results.
