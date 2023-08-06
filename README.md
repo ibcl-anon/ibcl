@@ -183,7 +183,9 @@ Split CIFAR-10      | CelebA     |
 
 <p align="center"><b>Figure 4: Comparison of buffer growth between linear and sublinear IBCL on Split CIFAR-10 and CelebA.</b></p>
 
-We can see that the buffer growths are significantly reduced. Especially in CelebA dataset, where we only requires 1 posterior BNN model to represent all posteriors in this case.
+Figure 4 shows that the sublinear IBCL requires 4 and 1 posteiror models to be cached, in order to address any preferences on the 5 Split CIFAR-10 tasks and the 40 CelebA tasks, respectively.
+This reduces the memory overhead by 3.75 and 120 times from the linear version, respectively.
+CelebA dataset now only requires 1 posterior BNN model to represent all posteriors with our algorithm.
 This result aligns with Figure 3 in our original paper, which shows there is a unique optimal model to address all preference trade-offs for CelebA tasks.
 This new experiment shows that the sublinear version of IBCL is able to capture the unique optimal model, if there exists one.
 
