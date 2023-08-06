@@ -87,7 +87,10 @@ def plot_metrics(dict_metric, task_nums=5, metric_name='Avg per task accuracy', 
         plt.ylim([-0.5, 0.5])
     else:
         plt.ylim([0, 1])
-    plt.xticks(np.array(task_range) + 1)
+    if task_nums <= 10:
+        plt.xticks(np.array(task_range) + 1)
+    else:
+        plt.xticks(np.array(task_range[::5]) + 1)
     plt.xlabel('Task num')
     plt.ylabel(metric_name)
     plt.title('IBCL Performance')

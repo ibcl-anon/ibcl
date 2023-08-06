@@ -300,6 +300,7 @@ def fgcs_update_main_sublinear(data_dir, tasks, model_type='small', discard_thre
         np.save(os.path.join(data_dir, 'val_acc_logs_sublinear.npy'), val_acc_logs)
         torch.save(dict_reuse_map, os.path.join(data_dir, f'dict_reuse_map.pt'))
 
+    torch.save(buffer_growth, os.path.join(data_dir, 'buffer_growth.pt'))
     plot_buffer_growth(buffer_growth)
 
     return loss_logs, val_acc_logs

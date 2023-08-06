@@ -1,10 +1,14 @@
 # IBCL Code
 
-## Update 08/03/2023
+## Update 08/06/2023
 
-We did some further modifications to this README.
+We added sublinear buffer growth experiments on CelebA dataset.
 
-1. Added captions to figures in this file.
+1. Additional results are reported in the sections below. 
+We identify that the sublinear buffer growth algorithm not only does not hurt the performance much, but also significantly reduces the memory overhead.
+
+2. Our new experiment shows that if a sequence of continual learning tasks have a unique optimal model to address all preferences, the sublinear IBCL is able to 
+capture this unique optimality.
 
 ## Update 08/02/2023
 
@@ -139,7 +143,7 @@ where $\mu_{Q}$ and $\sigma_{Q}$ are the concatenated vector of the means and st
 a multivariate Gaussian $Q$.
 Please refer to reference [12] in our paper for more detail. We can see there is one additional hyperparameter, i.e., distance threshold $\tau$.
 This threshold's value can be estimated by computing the distances among all posteriors in the linear version.
-Moreover, our implementation uses the same threshold for different BNN architectures, which have different number of parameters.to
+Moreover, our implementation uses the same threshold for different BNN architectures, which have different number of parameters.
 To remove the effect of parameter number on the 2-Wasserstein distance, we normalize all distances by the number of parameters.
 This can be seen in the computation of `dist` in `fgcs_update_sublinear.py`.
 
@@ -153,19 +157,35 @@ Linear | ![avg_acc](figs/cifar10_avg_acc_example.png) | ![peak_acc](figs/cifar10
 Sublinear | ![avg_acc](figs/cifar10_avg_acc_sublinear_example.png) | ![peak_acc](figs/cifar10_peak_acc_sublinear_example.png) | ![avg_bt](figs/cifar10_avg_bt_sublinear_example.png)|
 
 <p align="center">
-    <b>Figure 2: Comparison of continual learning performance metrics between linear and sublinear IBCL on Split CIFAR-10.</b>
+    <b>Figure 2: Comparison of continual learning performance metrics between linear and sublinear IBCL on Split CIFAR-10, alpha = 0.75. </b>
+</p>
+
+Next, we also repeat the linear vs. sublinear comparison on CelebA dataset.
+
+Buffer growth | Avg per task accuracy       | Peak per task accuracy      | Avg per task backward transfer|
+--------------| ---------------------- | ---------------------- | ----------------------------- |
+Linear | ![avg_acc](figs/celeba_avg_acc_example.png) | ![peak_acc](figs/celeba_peak_acc_example.png) | ![avg_bt](figs/celeba_avg_bt_example.png)|
+Sublinear | ![avg_acc](figs/celeba_avg_acc_sublinear_example.png) | ![peak_acc](figs/celeba_peak_acc_sublinear_example.png) | ![avg_bt](figs/celeba_avg_bt_sublinear_example.png)|
+
+<p align="center">
+    <b>Figure 3: Comparison of continual learning performance metrics between linear and sublinear IBCL on CelebA, alpha = 0.75. </b>
 </p>
 
 We can see there is a trade-off between buffer efficiency and continual learning performance.
-However, the peak per task accuracy is barely harmed in this case, and the backward transfer still remains consistently positive, meaning
+However, the peak per task accuracy in both benchmarks is barely harmed in this case, and the backward transfers still remain consistently positive, meaning
 that the model is not catastrophic forgetting. Moreover, a significant improvement is the buffer size growth, as shown below.
 
-<p align="center">
-    <img src="figs/cifar10_sublinear_buffer.png"  width="50%" height="50%">
-</p>
 
-<p align="center"><b>Figure 3: Comparison of buffer growth between linear and sublinear IBCL on Split CIFAR-10.</b></p>
+| Split CIFAR-10      | CelebA     |
+| ---------------------- | ---------------------- | ----------------------------- |
+| ![cifar10](figs/cifar10_sublinear_buffer.png) | ![celeba](figs/celeba_sublinear_buffer.png) |
 
+
+<p align="center"><b>Figure 4: Comparison of buffer growth between linear and sublinear IBCL on Split CIFAR-10 and CelebA.</b></p>
+
+We can see that the buffer growths are significantly reduced. Especially in CelebA dataset, where we only requires 1 posterior BNN model to represent all posteriors in this case.
+This result aligns with Figure 3 in our original paper, which shows there is a unique optimal model to address all preference trade-offs for CelebA tasks.
+This new experiment shows that the sublinear version of IBCL is able to capture the unique optimal model, if there exists one.
 
 We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by $\tau$)
 and learning performance in IBCL. If we have a chance to make a camera-ready version, we will include additional experiments and discussion.
