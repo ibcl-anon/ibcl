@@ -176,9 +176,9 @@ However, the peak per task accuracy in both benchmarks is barely harmed in this 
 that the model is not catastrophic forgetting. Moreover, a significant improvement is the buffer size growth, as shown below.
 
 
-| Split CIFAR-10      | CelebA     |
-| ---------------------- | ---------------------- | ----------------------------- |
-| ![cifar10](figs/cifar10_sublinear_buffer.png) | ![celeba](figs/celeba_sublinear_buffer.png) |
+Split CIFAR-10      | CelebA     |
+--------------------| -----------|
+![cifar10](figs/cifar10_sublinear_buffer.png) | ![celeba](figs/celeba_sublinear_buffer.png) |
 
 
 <p align="center"><b>Figure 4: Comparison of buffer growth between linear and sublinear IBCL on Split CIFAR-10 and CelebA.</b></p>
