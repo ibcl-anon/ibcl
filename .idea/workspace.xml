@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58eeb0b6-2b34-400a-b2b0-f0768fddf467" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/baseline_gem.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/baseline_vcl.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualize_results_w_baselines.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/loss_funcs.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/loss_funcs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualize_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize_results.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +30,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ibcl - Copy" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">

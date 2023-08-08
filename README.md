@@ -1,5 +1,15 @@
 # IBCL Code
 
+## Update 08/08/2023
+
+We added our implementation of the two baseline methods and visualization.
+
+1. Two additional scripts `baseline_gem.py` and `baseline_vcl.py`.
+
+2. Additional visualization script `visualize_results_w_baselines.py`.
+
+3. Updated instructions accordingly.
+
 ## Update 08/06/2023
 
 We added sublinear buffer growth experiments on CelebA dataset.
@@ -105,7 +115,7 @@ python visualize_results.py --task_name=<cifar10|celeba> --data_dir=<your proc d
 
 This will fetch the accuracy `.pt` file saved from last step and produce 3 figures similar to the ones above.
 These figures are produced under the configurations in `example_split_cifar10.sh`.
-Notice that this code does not visualize baseline results for comparison yet, but we can add this function per request.
+Notice that this code does not visualize baseline results for comparison yet. To do so, refer to step 6 and follows.
 
 
 ### 5. An example Split-CIFAR10 bash script
@@ -114,6 +124,34 @@ We have included an example run of the entire three steps on Split-CIFAR10 as a 
 This script starts from preprocessing the data and ends up visualizing the results.
 If calling this bash script does not work, please refer to the step-by-step instructions above to produce results.
 
+
+## Instructions of running baseline methods
+
+### 6. Running GEM and VCL
+
+After we have finished preprocessing data (i.e. after step 1), we can call GEM and VCL to generate baseline results as in our experiments.
+This can be done by the following commands.
+
+```
+python baseline_gem.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --model_size=<small|normal|large> --num_prefs_per_task=<number of preferences per task>
+```
+
+```
+python baseline_vcl.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --model_size=<small|normal|large> --num_prefs_per_task=<number of preferences per task> --num_models_per_pref=<number of sampled models per preference>
+```
+
+Notice that GEM is a deterministic machine learning algorithm, so it does not sample models after producing a probabilistic solution. 
+That is, there is no `num_models_per_pref`.
+
+
+### 7. Visualizing GEM, VCL and IBCL results together
+
+After we obtain results from IBCL and the two baselines (i.e. after step 3 and 6), we can call the following command to visualize the results together.
+This will generate figures similar to Figure 4 in our paper.
+
+```
+python visualize_results_w_baselines.py --task_name=<cifar10|celeba> --data_dir=<your proc data dir> --alpha=<a number between 0 and 1>
+```
 
 ## Sublinear buffer growth and additional experiment results
 

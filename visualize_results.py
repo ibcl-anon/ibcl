@@ -6,58 +6,69 @@ import matplotlib.pyplot as plt
 
 
 # Compute average per task acc
-def avg_per_task_acc(dict_all_accs, task_nums=5):
+def avg_per_task_acc(dict_all_accs, task_nums=40, deterministic=False):
     dict_out = {}
-
     for i in range(task_nums):
         task_accs = dict_all_accs[i]
         task_pareto_accs = []
         for pref_accs in task_accs:  # for each preference
-            pref_pareto_avg_acc = np.mean(pref_accs)
+            pref_avg_accs = []
+            if not deterministic:  # VCL, IBCL
+                for sampled_model_accs in pref_accs:  # for each sampled model
+                    avg_model_acc = np.mean(sampled_model_accs)  # average across all tasks so far
+                    pref_avg_accs += [avg_model_acc]
+                pref_pareto_avg_acc = np.amax(pref_avg_accs)
+            else:  # GEM
+                pref_pareto_avg_acc = np.mean(pref_accs)
             task_pareto_accs += [pref_pareto_avg_acc]
         dict_out[i] = task_pareto_accs
-
     return dict_out
 
 
 # Compute peak per task acc
-def peak_per_task_acc(dict_all_accs, task_nums=5):
+def peak_per_task_acc(dict_all_accs, task_nums=40, deterministic=False):
     dict_out = {}
-
     for i in range(task_nums):
         task_accs = dict_all_accs[i]
         task_pareto_accs = []
         for pref_accs in task_accs:  # for each preference
             pref_peak_accs = []
-            for sampled_model_accs in pref_accs:  # for each sampled model
-                peak_model_acc = np.amax(sampled_model_accs)  # max across all tasks so far
-                pref_peak_accs += [peak_model_acc]
-            pref_pareto_peak_acc = np.amax(pref_peak_accs)
+            if not deterministic:  # VCL, IBCL
+                for sampled_model_accs in pref_accs:  # for each sampled model
+                    peak_model_acc = np.amax(sampled_model_accs)  # max across all tasks so far
+                    pref_peak_accs += [peak_model_acc]
+                pref_pareto_peak_acc = np.amax(pref_peak_accs)
+            else:  # GEM
+                pref_pareto_peak_acc = np.amax(pref_accs)
             task_pareto_accs += [pref_pareto_peak_acc]
         dict_out[i] = task_pareto_accs
-
     return dict_out
 
 
 # Compute average backward transfer
-def avg_bt(dict_all_accs, task_nums=5):
+def avg_bt(dict_all_accs, task_nums=40, deterministic=False):
     dict_out = {}
-
     for i in range(1, task_nums):
         task_accs = dict_all_accs[i]
         task_pareto_bts = []
         for pref_accs in task_accs:  # for each preference
             pref_bts = []
-            for sampled_model_accs in pref_accs:  # for each sampled model
+            if not deterministic:  # VCL, IBCL
+                for sampled_model_accs in pref_accs:  # for each sampled model
+                    model_bt = 0
+                    for j in range(1, len(sampled_model_accs)):
+                        model_bt += sampled_model_accs[j] - sampled_model_accs[j - 1]
+                    model_bt = model_bt / (len(sampled_model_accs) - 1)
+                    pref_bts += [model_bt]
+                pref_pareto_bts = np.amax(pref_bts)
+            else:  # GEM
                 model_bt = 0
-                for j in range(1, len(sampled_model_accs)):
-                    model_bt += sampled_model_accs[j] - sampled_model_accs[j - 1]
-                model_bt = model_bt / (len(sampled_model_accs) - 1)
-                pref_bts += [model_bt]
-            pref_pareto_bts = np.amax(pref_bts)
+                for j in range(1, len(pref_accs)):
+                    model_bt += pref_accs[j] - pref_accs[j - 1]
+                model_bt = model_bt / (len(pref_accs) - 1)
+                pref_pareto_bts = model_bt
             task_pareto_bts += [pref_pareto_bts]
         dict_out[i] = task_pareto_bts
-
     return dict_out
 
 

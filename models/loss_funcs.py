@@ -1,4 +1,7 @@
-from pyro.infer import Trace_ELBO
+import pyro
+from pyro.infer import SVI, Trace_ELBO
+import pyro.poutine as poutine
+from pyro.infer.util import torch_item
 
 ""
 class CustomTrace_ELBO(Trace_ELBO):
@@ -27,3 +30,29 @@ class CustomTrace_ELBO(Trace_ELBO):
                 surrogate_loss_particle.backward(retain_graph=True) # We simply rewrite this line
 #         warn_if_nan(loss, "loss")
         return loss
+
+
+class CustomSVI(SVI):
+
+    def step(self, weight, *args, **kwargs):
+
+        # get loss and compute gradients
+        with poutine.trace(param_only=True) as param_capture:
+            loss = weight * self.loss_and_grads(self.model, self.guide, *args, **kwargs)
+
+        params = set(
+            site["value"].unconstrained() for site in param_capture.trace.nodes.values()
+        )
+
+        # actually perform gradient steps
+        # torch.optim objects gets instantiated for any params that haven't been seen yet
+        self.optim(params)
+
+        # zero gradients
+        pyro.infer.util.zero_grads(params)
+
+        if isinstance(loss, tuple):
+            # Support losses that return a tuple, e.g. ReweightedWakeSleep.
+            return type(loss)(map(torch_item, loss))
+        else:
+            return torch_item(loss)
