@@ -223,9 +223,13 @@ Split CIFAR-10      | CelebA     |
 
 Figure 4 shows that the sublinear IBCL requires 4 and 1 posteiror models to be cached, in order to address any preferences on the 5 Split CIFAR-10 tasks and the 40 CelebA tasks, respectively.
 This reduces the memory overhead by 3.75 and 120 times from the linear version, respectively.
-CelebA dataset now only requires 1 posterior BNN model to represent all posteriors with our algorithm.
+
+Notice that CelebA dataset now only requires 1 posterior BNN model to represent all posteriors with our algorithm.
 This result aligns with Figure 3 in our original paper, which shows there is a unique optimal model to address all preference trade-offs for CelebA tasks.
-This new experiment shows that the sublinear version of IBCL is able to capture the unique optimal model, if there exists one.
+This new experiment shows that <b>when sublinear IBCL identifies sufficiently many posterior models to optimally address all preference trade-offs,
+it will stop growing its buffer.</b> This is because if the existing models are already capable, using them as priors, the new posteriors will not be too different from them
+after variational inference. Therefore, the newly learned posteriors will be discarded by sublinear IBCL. 
+In this case of CelebA, there exists a unique optimality, and sublinear IBCL is able to identify it and stop memorizing any more models.
 
 We are willing to run more experiments and analyze the trade-off between buffer efficiency (e.g. quantified by $\tau$)
 and learning performance in IBCL. If we have a chance to make a camera-ready version, we will include additional experiments and discussion.
