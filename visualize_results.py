@@ -5,70 +5,104 @@ import argparse
 import matplotlib.pyplot as plt
 
 
+# Generate lower triangular matrix of accs to compute CL metrics
+# Each task has M prefs, each pref has K models, each model evaluates testing acc on i tasks encountered so far
+# If model is probabilistic, generate 3 matrices - max, mean, min; else, generate 1 matrix
+def generate_acc_matrix(dict_all_accs, dict_prefs, task_nums=5, deterministic=False):
+    dict_matrix = {}
+    for i in range(task_nums):
+        task_prefs = dict_prefs[i]
+        prefs_sum = np.sum(task_prefs, axis=0)
+        task_accs = dict_all_accs[i]
+        pref_weighted_max_accs = np.zeros(shape=(i+1))
+        pref_weighted_mean_accs = np.zeros(shape=(i+1))
+        pref_weighted_min_accs = np.zeros(shape=(i+1))
+        pref_weighted_accs = np.zeros(shape=(i+1))
+        for j in range(len(task_accs)):
+            pref = np.array(task_prefs[j])  # shape = (i)
+            pref_weights = []
+            for l in range(i+1):
+                if prefs_sum[l] == 0:
+                    pref_weights += [1 / i]
+                else:
+                    pref_weights += [pref[l] / prefs_sum[l]]
+            pref_weights = np.array(pref_weights)
+            pref_accs = task_accs[j]
+            pref_accs = np.array(pref_accs)
+            if not deterministic:  # VCL, IBCL - probabilistic models
+                # For each pref, get the max, mean, min performance of the sampled models
+                pref_max_accs = np.max(pref_accs, axis=0)  # shape = (i)
+                pref_mean_accs = np.mean(pref_accs, axis=0)
+                pref_min_accs = np.min(pref_accs, axis=0)
+                # Compute weighted sum - performance in addressing each pref
+                pref_weighted_max_accs += np.multiply(pref_max_accs, pref_weights)
+                pref_weighted_mean_accs += np.multiply(pref_mean_accs, pref_weights)
+                pref_weighted_min_accs += np.multiply(pref_min_accs, pref_weights)
+            else:
+                pref_weighted_accs += np.multiply(pref_accs, pref_weights)
+        if not deterministic:
+            dict_matrix[i] = [pref_weighted_max_accs, pref_weighted_mean_accs, pref_weighted_min_accs]
+        else:
+            dict_matrix[i] = [pref_weighted_accs]
+    return dict_matrix
+
+
 # Compute average per task acc
-def avg_per_task_acc(dict_all_accs, task_nums=40, deterministic=False):
+def avg_per_task_acc(dict_matrix, task_nums=5, deterministic=False):
     dict_out = {}
     for i in range(task_nums):
-        task_accs = dict_all_accs[i]
-        task_pareto_accs = []
-        for pref_accs in task_accs:  # for each preference
-            pref_avg_accs = []
-            if not deterministic:  # VCL, IBCL
-                for sampled_model_accs in pref_accs:  # for each sampled model
-                    avg_model_acc = np.mean(sampled_model_accs)  # average across all tasks so far
-                    pref_avg_accs += [avg_model_acc]
-                pref_pareto_avg_acc = np.amax(pref_avg_accs)
-            else:  # GEM
-                pref_pareto_avg_acc = np.mean(pref_accs)
-            task_pareto_accs += [pref_pareto_avg_acc]
-        dict_out[i] = task_pareto_accs
+        if not deterministic:
+            pref_weighted_max_accs, pref_weighted_mean_accs, pref_weighted_min_accs = dict_matrix[i]
+            avg_max_acc = np.mean(pref_weighted_max_accs)
+            avg_mean_acc = np.mean(pref_weighted_mean_accs)
+            avg_min_acc = np.mean(pref_weighted_min_accs)
+            dict_out[i] = [avg_max_acc, avg_mean_acc, avg_min_acc]
+        else:
+            pref_weighted_accs = dict_matrix[i]
+            avg_acc = np.mean(pref_weighted_accs)
+            dict_out[i] = [avg_acc]
     return dict_out
 
 
 # Compute peak per task acc
-def peak_per_task_acc(dict_all_accs, task_nums=40, deterministic=False):
+def peak_per_task_acc(dict_matrix, task_nums=5, deterministic=False):
     dict_out = {}
     for i in range(task_nums):
-        task_accs = dict_all_accs[i]
-        task_pareto_accs = []
-        for pref_accs in task_accs:  # for each preference
-            pref_peak_accs = []
-            if not deterministic:  # VCL, IBCL
-                for sampled_model_accs in pref_accs:  # for each sampled model
-                    peak_model_acc = np.amax(sampled_model_accs)  # max across all tasks so far
-                    pref_peak_accs += [peak_model_acc]
-                pref_pareto_peak_acc = np.amax(pref_peak_accs)
-            else:  # GEM
-                pref_pareto_peak_acc = np.amax(pref_accs)
-            task_pareto_accs += [pref_pareto_peak_acc]
-        dict_out[i] = task_pareto_accs
+        if not deterministic:
+            pref_weighted_max_accs, pref_weighted_mean_accs, pref_weighted_min_accs = dict_matrix[i]
+            peak_max_acc = np.max(pref_weighted_max_accs)
+            peak_mean_acc = np.max(pref_weighted_mean_accs)
+            peak_min_acc = np.max(pref_weighted_min_accs)
+            dict_out[i] = [peak_max_acc, peak_mean_acc, peak_min_acc]
+        else:
+            pref_weighted_accs = dict_matrix[i]
+            peak_acc = np.max(pref_weighted_accs)
+            dict_out[i] = [peak_acc]
     return dict_out
 
 
+def compute_bt(accs):
+    all_diffs = []
+    for i in range(1, len(accs)):
+        acc_diff = accs[i] - accs[i-1]
+        all_diffs += [acc_diff]
+    return np.mean(all_diffs)
+
+
 # Compute average backward transfer
-def avg_bt(dict_all_accs, task_nums=40, deterministic=False):
+def avg_bt(dict_matrix, task_nums=5, deterministic=False):
     dict_out = {}
     for i in range(1, task_nums):
-        task_accs = dict_all_accs[i]
-        task_pareto_bts = []
-        for pref_accs in task_accs:  # for each preference
-            pref_bts = []
-            if not deterministic:  # VCL, IBCL
-                for sampled_model_accs in pref_accs:  # for each sampled model
-                    model_bt = 0
-                    for j in range(1, len(sampled_model_accs)):
-                        model_bt += sampled_model_accs[j] - sampled_model_accs[j - 1]
-                    model_bt = model_bt / (len(sampled_model_accs) - 1)
-                    pref_bts += [model_bt]
-                pref_pareto_bts = np.amax(pref_bts)
-            else:  # GEM
-                model_bt = 0
-                for j in range(1, len(pref_accs)):
-                    model_bt += pref_accs[j] - pref_accs[j - 1]
-                model_bt = model_bt / (len(pref_accs) - 1)
-                pref_pareto_bts = model_bt
-            task_pareto_bts += [pref_pareto_bts]
-        dict_out[i] = task_pareto_bts
+        if not deterministic:
+            pref_weighted_max_accs, pref_weighted_mean_accs, pref_weighted_min_accs = dict_matrix[i]
+            bt_max_acc = compute_bt(pref_weighted_max_accs)
+            bt_mean_acc = compute_bt(pref_weighted_mean_accs)
+            bt_min_acc = compute_bt(pref_weighted_min_accs)
+            dict_out[i] = [bt_max_acc, bt_mean_acc, bt_min_acc]
+        else:
+            pref_weighted_accs = dict_matrix[i]
+            bt_acc = compute_bt(pref_weighted_accs)
+            dict_out[i] = [bt_acc]
     return dict_out
 
 
@@ -111,17 +145,23 @@ def plot_metrics(dict_metric, task_nums=5, metric_name='Avg per task accuracy', 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--task_name", help="celeba or cifar10", default='cifar10')
+    parser.add_argument("--task_name", help="celeba or cifar10 or rmnist", default='cifar10')
     parser.add_argument("--data_dir", help="directory to the preprocessed data",
                         default=os.path.join('data', 'cifar-10-features'))
     parser.add_argument("--alpha", help="alpha value of IBCL in (0, 1)", default=0.5)
-    parser.add_argument("--sublinear", help="0 or 1, 1 means it is a sublinear model", default=0)
+    parser.add_argument("--discard_threshold", help="d threshold of sublinear fgcs", default=0.01)
     args = parser.parse_args()
 
     if args.task_name == 'cifar10':
         task_nums = 5
     elif args.task_name == 'celeba':
-        task_nums = 40
+        task_nums = 15
+    elif args.task_name == 'cifar100':
+        task_nums = 10
+    elif args.task_name == 'tinyimagenet':
+        task_nums = 10
+    elif args.task_name == '20newsgroup':
+        task_nums = 5
     else:
         raise NotImplementedError
 
@@ -129,12 +169,18 @@ if __name__ == '__main__':
     if int(args.sublinear) == 0:
         dict_all_accs = torch.load(os.path.join(args.data_dir, f'dict_all_accs_{args.alpha}.pt'))
     else:
-        dict_all_accs = torch.load(os.path.join(args.data_dir, f'dict_all_accs_{args.alpha}_sublinear.pt'))
+        dict_all_accs = torch.load(os.path.join(args.data_dir, f'dict_all_accs_{args.alpha}_{args.discard_threshold}.pt'))
+
+    # Load dict of prefs
+    dict_prefs = torch.load(os.path.join(args.data_dir, 'dict_prefs.pt'))
+
+    # Compute acc matrix
+    dict_matrix = generate_acc_matrix(dict_all_accs, dict_prefs, task_nums=task_nums, deterministic=False)
 
     # Compute metrics
-    dict_avg_accs = avg_per_task_acc(dict_all_accs, task_nums=task_nums)
-    dict_peak_accs = peak_per_task_acc(dict_all_accs, task_nums=task_nums)
-    dict_avg_bts = avg_bt(dict_all_accs, task_nums=task_nums)
+    dict_avg_accs = avg_per_task_acc(dict_matrix, task_nums=task_nums)
+    dict_peak_accs = peak_per_task_acc(dict_matrix, task_nums=task_nums)
+    dict_avg_bts = avg_bt(dict_matrix, task_nums=task_nums)
 
     # Plot metrics
     plot_metrics(dict_avg_accs, task_nums=task_nums, metric_name='Avg per task accuracy', bt=False)

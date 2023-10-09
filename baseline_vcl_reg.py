@@ -70,27 +70,18 @@ class VCLGEM():
 
         return guide
 
-    def compute_loss(self, svi, data, targets, pref=None):
+    def compute_loss(self, svi, data, targets, pref):
         total_loss = 0.0
         for task in range(self.current_task + 1):
             if self.memory[task]['data'] is not None:
                 old_data, old_targets = self.memory[task]['data'], self.memory[task]['targets']
-                if pref is not None:
-                    old_loss = svi.step(pref[task], old_data, old_targets)
-                    total_loss += pref[task] * old_loss  # Loss regularized by preferences
-                else:
-                    old_loss = svi.step(1.0, old_data, old_targets)
-                    total_loss += old_loss
-
-        if pref is not None:
-            new_loss = svi.step(pref[self.current_task], data, targets)
-            total_loss += pref[self.current_task] * new_loss  # Loss regularized by preferences
-        else:
-            new_loss = svi.step(1.0, data, targets)
-            total_loss += new_loss
+                old_loss = svi.step(pref[task], old_data, old_targets)
+                total_loss += pref[task] * old_loss  # Loss regularized by preferences
+        new_loss = svi.step(pref[self.current_task], data, targets)
+        total_loss += pref[self.current_task] * new_loss  # Loss regularized by preferences
         return total_loss
 
-    def learn(self, dataloader, pref=None):
+    def learn(self, dataloader, pref):
         optimizer = Adam({"lr": self.lr})
         svi = CustomSVI(self.general_model(), self.general_guide(), optimizer, loss=CustomTrace_ELBO())
         for i in range(self.epochs):
@@ -178,12 +169,11 @@ def vcl_main(data_dir, model_type='small', task_name='cifar10', num_models_per_p
         prefs = dict_prefs[i]
 
         task_accs = []
-
-        # For all prefs, train the same model
-        vclgem.learn(task_train_loader)
-        guide = vclgem.general_guide()
-
         for pref in prefs:
+
+            # Training on a pref
+            vclgem.learn(task_train_loader, pref)
+            guide = vclgem.general_guide()
 
             # Testing
             pref_models_accs = []
@@ -222,7 +212,7 @@ def vcl_main(data_dir, model_type='small', task_name='cifar10', num_models_per_p
 
         print(f'task accs: {task_accs}')
         dict_all_accs[i] = task_accs
-        torch.save(dict_all_accs, os.path.join(data_dir, 'dict_all_accs_vcl.pt'))
+        torch.save(dict_all_accs, os.path.join(data_dir, 'dict_all_accs_vcl_reg.pt'))
 
         # Memorize some training data
         vclgem.remember(task_train_loader)

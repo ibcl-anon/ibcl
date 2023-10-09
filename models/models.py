@@ -19,7 +19,7 @@ class BayesianClassifierLarge(torch.nn.Module):
         super(BayesianClassifierLarge, self).__init__()
         self.fc1 = torch.nn.Linear(input_dim, h1)
         self.fc2 = torch.nn.Linear(h1, h2)
-        self.fc3= torch.nn.Linear(h2, output_dim)
+        self.fc3 = torch.nn.Linear(h2, output_dim)
 
     def forward(self, x):
         x = torch.relu(self.fc1(x))
