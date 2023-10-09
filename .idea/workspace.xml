@@ -2,44 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58eeb0b6-2b34-400a-b2b0-f0768fddf467" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/baseline_gem_reg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/baseline_vcl_reg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example_split_cifar100.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/generate_preferences.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/visualize_alpha.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/visualize_buffer_growth.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/visualize_d.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/visualize_first_two_tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baseline_gem.py" beforeDir="false" afterPath="$PROJECT_DIR$/baseline_gem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baseline_vcl.py" beforeDir="false" afterPath="$PROJECT_DIR$/baseline_vcl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example_split_cifar10.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example_split_cifar10_sublinear.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgcs_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgcs_update.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgcs_update_sublinear.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_avg_acc_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_avg_acc_sublinear_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_avg_bt_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_avg_bt_sublinear_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_peak_acc_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_peak_acc_sublinear_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/celeba_sublinear_buffer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_avg_acc_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_avg_acc_sublinear_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_avg_bt_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_avg_bt_sublinear_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_peak_acc_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_peak_acc_sublinear_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/figs/cifar10_sublinear_buffer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/dataloader_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dataloader_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/preprocess_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/preprocess_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualize_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize_results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualize_results_w_baselines.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualize_results_w_baselines.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zero_shot_model_locate.py" beforeDir="false" afterPath="$PROJECT_DIR$/zero_shot_model_locate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zero_shot_model_locate_sublinear.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

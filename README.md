@@ -2,7 +2,7 @@
 
 This is the anonymous GitHub repo of paper "IBCL: Zero-shot Model Generation for Task Trade-offs in Continual Learning".
 
-![IBCL Workflow(figs/ibcl_flowchart.png)
+![IBCL Workflow](figs/ibcl_flowchart.png)
 
 
 ## Instructions of running our code
@@ -120,3 +120,6 @@ peak per task accuracy and backward transfer, as we did in Section 5.2.
 ```
 python visualize_results_w_baselines.py --task_name=<ca valid task name> --data_dir=<your proc data dir> --alpha=<the same alpha in step 4> --discard_threshold=<the same discard threshold in step 4>
 ```
+
+Notice we have several code scripts for visualizing other results such as buffer growth and ablation study results. 
+These have not yet equipped with a command line interface, and will be updated later.
