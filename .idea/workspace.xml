@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58eeb0b6-2b34-400a-b2b0-f0768fddf467" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baseline_gem_reg.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/baseline_vcl_reg.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/preprocess_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/preprocess_utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,12 +31,12 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\phd\ibcl\ibcl" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\phd\ibcl\ibcl_code" />
       <recent name="D:\phd\ibcl\ibcl_code\utils" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\phd\ibcl\ibcl" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -47,8 +51,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.visualize_buffer_growth">
-    <configuration name="tuning_2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.baseline_l2p">
+    <configuration name="baseline_l2p" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ibcl_code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -60,7 +64,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tuning_2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/baseline_l2p.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -155,11 +159,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.baseline_l2p" />
         <item itemvalue="Python.visualize_buffer_growth" />
         <item itemvalue="Python.visualize_d" />
         <item itemvalue="Python.visualize_alpha" />
         <item itemvalue="Python.visualize_first_two_tasks" />
-        <item itemvalue="Python.tuning_2" />
       </list>
     </recent_temporary>
   </component>

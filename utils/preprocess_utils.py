@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import PCA
-from utils.dataloader_utils import AugmentedCIFAR100Dataset, TinyImageNet
+from utils.dataloader_utils import TinyImageNet
 
 
 def set_seed(seed):
@@ -118,43 +118,43 @@ def download_cifar100(root_dir):
     return trainset, testset, trainloader, testloader
 
 
-def augment_cifar100(root_dir, dataset, train=True):
-    transform_augment = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomRotation(15),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1))
-    ])
-
-    augmented_data = []
-    augmented_labels = []
-
-    for idx, (image, label) in tqdm.tqdm(enumerate(dataset), total=len(dataset)):
-        # Add the original image to the augmented dataset
-        original_img_array = np.array(image).reshape(3, 32, 32).transpose(1, 2, 0)
-        augmented_data.append(original_img_array)
-        augmented_labels.append(label)
-
-        # Augment and add the image 9 more times to reach a total of 10 versions per original image
-        for _ in range(9):
-            augmented_img = transform_augment(image)
-            img_array = np.array(augmented_img).reshape(3, 32, 32).transpose(1, 2, 0)
-            augmented_data.append(img_array)
-            augmented_labels.append(label)
-
-    # Convert the augmented data and labels into numpy arrays
-    augmented_data_np = np.array(augmented_data).reshape(-1, 3 * 32 * 32)
-    augmented_labels_np = np.array(augmented_labels)
-
-    # Get dataloader
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))  # CIFAR-100 normalization
-    ])
-    dataset = AugmentedCIFAR100Dataset(augmented_data_np, augmented_labels_np, transform=transform)
-    dataloader = DataLoader(dataset, batch_size=64, shuffle=False, num_workers=0)  # Avoid pickling by num_workers=0
-    return dataloader
+# def augment_cifar100(root_dir, dataset, train=True):
+#     transform_augment = transforms.Compose([
+#         transforms.RandomCrop(32, padding=4),
+#         transforms.RandomHorizontalFlip(),
+#         transforms.RandomRotation(15),
+#         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+#         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1))
+#     ])
+#
+#     augmented_data = []
+#     augmented_labels = []
+#
+#     for idx, (image, label) in tqdm.tqdm(enumerate(dataset), total=len(dataset)):
+#         # Add the original image to the augmented dataset
+#         original_img_array = np.array(image).reshape(3, 32, 32).transpose(1, 2, 0)
+#         augmented_data.append(original_img_array)
+#         augmented_labels.append(label)
+#
+#         # Augment and add the image 9 more times to reach a total of 10 versions per original image
+#         for _ in range(9):
+#             augmented_img = transform_augment(image)
+#             img_array = np.array(augmented_img).reshape(3, 32, 32).transpose(1, 2, 0)
+#             augmented_data.append(img_array)
+#             augmented_labels.append(label)
+#
+#     # Convert the augmented data and labels into numpy arrays
+#     augmented_data_np = np.array(augmented_data).reshape(-1, 3 * 32 * 32)
+#     augmented_labels_np = np.array(augmented_labels)
+#
+#     # Get dataloader
+#     transform = transforms.Compose([
+#         transforms.ToTensor(),
+#         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))  # CIFAR-100 normalization
+#     ])
+#     dataset = AugmentedCIFAR100Dataset(augmented_data_np, augmented_labels_np, transform=transform)
+#     dataloader = DataLoader(dataset, batch_size=64, shuffle=False, num_workers=0)  # Avoid pickling by num_workers=0
+#     return dataloader
 
 
 def save_split_cifar100(data_dir, train_features, train_labels, test_features, test_labels):

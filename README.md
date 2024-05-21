@@ -1,6 +1,6 @@
 # IBCL Code
 
-This is the anonymous GitHub repo of paper "IBCL: Zero-shot Model Generation for Task Trade-offs in Continual Learning".
+This is the anonymous GitHub repo of paper "IBCL: Zero-shot Model Generation under Stability-Plasticity Trade-off Preferences in Continual Learning".
 
 ![IBCL Workflow](figs/ibcl_flowchart.png)
 
