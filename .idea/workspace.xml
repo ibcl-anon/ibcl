@@ -4,9 +4,6 @@
     <list default="true" id="58eeb0b6-2b34-400a-b2b0-f0768fddf467" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baseline_gem_reg.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/baseline_vcl_reg.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/preprocess_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/preprocess_utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
