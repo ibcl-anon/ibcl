@@ -354,7 +354,8 @@ if __name__ == '__main__':
     elif args.task_name == '20newsgroup':
         tasks = range(5)
         lr, epochs = 5e-4, 100
-        prior_stds = [2.0, 2.5, 3.0]
+        # prior_stds = [2.0, 2.5, 3.0]
+        prior_stds = [0.2, 0.25, 0.3]
     else:
         raise NotImplementedError
 
